@@ -21,9 +21,10 @@ export default function CartItem({ item }: CartItemProps) {
       <Image
         src={item.movie.image}
         alt={item.movie.title}
-        width={64}
-        height={82}
+        width={91}
+        height={114}
         className="h-[82px] w-[64px] object-contain sm:h-[114px] sm:w-[91px]"
+        priority
       />
 
       <div className="flex flex-1 flex-col gap-4 sm:flex-row sm:items-center sm:gap-0">

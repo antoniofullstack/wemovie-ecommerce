@@ -23,8 +23,8 @@ export default function Home() {
         </div>
       ) : (
         <div className="flex flex-col gap-4 md:flex-row md:flex-wrap">
-          {movies.map((movie) => (
-            <MovieCard key={movie.id} movie={movie} />
+          {movies.map((movie, index) => (
+            <MovieCard key={movie.id} movie={movie} priority={index < 3} />
           ))}
         </div>
       )}

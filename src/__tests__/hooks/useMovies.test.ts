@@ -81,4 +81,41 @@ describe("useMovies", () => {
       expect(result.current.movies).toEqual(updatedMovies);
     });
   });
+
+  it("should keep the latest refetch result when requests resolve out of order", async () => {
+    let resolveFirst: (value: typeof mockMovies) => void;
+    let resolveSecond: (value: typeof mockMovies) => void;
+
+    const firstRequest = new Promise<typeof mockMovies>((resolve) => {
+      resolveFirst = resolve;
+    });
+
+    const secondRequest = new Promise<typeof mockMovies>((resolve) => {
+      resolveSecond = resolve;
+    });
+
+    vi.mocked(api.getMovies)
+      .mockReturnValueOnce(firstRequest)
+      .mockReturnValueOnce(secondRequest);
+
+    const { result } = renderHook(() => useMovies());
+
+    const latestMovies = [{ id: 10, title: "Batman", price: 19.99, image: "https://example.com/batman.png" }];
+    result.current.refetch();
+
+    resolveSecond!(latestMovies);
+
+    await waitFor(() => {
+      expect(result.current.movies).toEqual(latestMovies);
+      expect(result.current.loading).toBe(false);
+    });
+
+    resolveFirst!(mockMovies);
+
+    await waitFor(() => {
+      expect(result.current.movies).toEqual(latestMovies);
+      expect(result.current.loading).toBe(false);
+    });
+  });
+
 });

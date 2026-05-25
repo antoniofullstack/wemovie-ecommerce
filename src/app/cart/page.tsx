@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCartStore } from "@/store/useCartStore";
 import { formatCurrency } from "@/utils/formatCurrency";
@@ -13,12 +14,15 @@ export default function CartPage() {
   const totalPrice = useCartStore((state) => state.getTotalPrice());
   const clearCart = useCartStore((state) => state.clearCart);
 
+  const [isFinishing, setIsFinishing] = useState(false);
+
   const handleFinishOrder = () => {
+    setIsFinishing(true);
     clearCart();
     router.push("/success");
   };
 
-  if (items.length === 0) {
+  if (items.length === 0 && !isFinishing) {
     return <EmptyCart />;
   }
 

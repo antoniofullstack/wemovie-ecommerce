@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: #2F2E41;
+  --color-foreground: #FFFFFF;
+  --color-card: #FFFFFF;
+  --color-primary: #009EDD;
+  --color-success: #039B00;
+  --color-text-dark: #333333;
+  --color-text-gray: #999999;
+  --color-border: #D9D9D9;
+  --font-sans: var(--font-open-sans);
+}
+
+button {
+  cursor: pointer;
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}

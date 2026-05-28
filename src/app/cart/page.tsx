@@ -14,7 +14,11 @@ export default function CartPage() {
   const clearCart = useCartStore((state) => state.clearCart);
 
   const totalPrice = useMemo(
-    () => items.reduce((total, item) => total + item.movie.price * item.quantity, 0),
+    () =>
+      items.reduce(
+        (total, item) => total + item.movie.price * item.quantity,
+        0
+      ),
     [items]
   );
 

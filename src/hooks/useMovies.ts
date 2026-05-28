@@ -1,57 +1,26 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Movie } from "@/types/movie";
 import { getMovies } from "@/services/api";
 
+export const moviesQueryKey = ["movies"] as const;
+
 interface UseMoviesOptions {
   initialMovies?: Movie[];
-  initialError?: boolean;
 }
 
-export function useMovies({ initialMovies, initialError }: UseMoviesOptions = {}) {
-  const hasInitialData = initialMovies !== undefined;
+export function useMovies({ initialMovies }: UseMoviesOptions = {}) {
+  const query = useQuery({
+    queryKey: moviesQueryKey,
+    queryFn: getMovies,
+    initialData: initialMovies,
+  });
 
-  const [movies, setMovies] = useState<Movie[]>(initialMovies ?? []);
-  const [loading, setLoading] = useState(!hasInitialData && !initialError);
-  const [error, setError] = useState(initialError ?? false);
-
-  // Performs the request and only mutates state inside async callbacks,
-  // so it is safe to call synchronously from an effect.
-  const requestMovies = useCallback((guard?: { aborted: boolean }) => {
-    getMovies()
-      .then((data) => {
-        if (!guard?.aborted) {
-          setMovies(data);
-          setError(false);
-        }
-      })
-      .catch(() => {
-        if (!guard?.aborted) setError(true);
-      })
-      .finally(() => {
-        if (!guard?.aborted) setLoading(false);
-      });
-  }, []);
-
-  const refetch = useCallback(() => {
-    setLoading(true);
-    setError(false);
-    requestMovies();
-  }, [requestMovies]);
-
-  useEffect(() => {
-    // When the server already provided data, skip the initial client fetch.
-    if (hasInitialData || initialError) {
-      return;
-    }
-
-    const guard = { aborted: false };
-    requestMovies(guard);
-    return () => {
-      guard.aborted = true;
-    };
-  }, [requestMovies, hasInitialData, initialError]);
-
-  return { movies, loading, error, refetch };
+  return {
+    movies: query.data ?? [],
+    loading: query.isLoading,
+    error: query.isError,
+    refetch: query.refetch,
+  };
 }

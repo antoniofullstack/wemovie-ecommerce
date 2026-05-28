@@ -17,7 +17,9 @@ vi.mock("next/navigation", () => ({
 describe("EmptyCart", () => {
   it("should render empty cart message", () => {
     render(<EmptyCart />);
-    expect(screen.getByText("Parece que não há nada por aqui :(")).toBeInTheDocument();
+    expect(
+      screen.getByText("Parece que não há nada por aqui :(")
+    ).toBeInTheDocument();
   });
 
   it("should render empty cart illustration", () => {
@@ -27,7 +29,9 @@ describe("EmptyCart", () => {
 
   it("should render reload button", () => {
     render(<EmptyCart />);
-    expect(screen.getByRole("button", { name: "Recarregar página" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Recarregar página" })
+    ).toBeInTheDocument();
   });
 
   it("should navigate to home when reload button is clicked", async () => {

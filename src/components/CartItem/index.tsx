@@ -17,7 +17,10 @@ export default function CartItem({ item }: CartItemProps) {
   const subtotal = item.movie.price * item.quantity;
 
   return (
-    <div data-testid={`cart-item-${item.movie.id}`} className="flex flex-row gap-4 sm:items-center">
+    <div
+      data-testid={`cart-item-${item.movie.id}`}
+      className="flex flex-row gap-4 sm:items-center"
+    >
       <Image
         src={item.movie.image}
         alt={item.movie.title}
@@ -42,7 +45,12 @@ export default function CartItem({ item }: CartItemProps) {
             aria-label={`Remover ${item.movie.title} do carrinho`}
             className="cursor-pointer text-primary transition-colors hover:text-primary/70 sm:hidden"
           >
-            <Image src="/images/bin-cart.svg" alt="Remover" width={16} height={18} />
+            <Image
+              src="/images/bin-cart.svg"
+              alt="Remover"
+              width={16}
+              height={18}
+            />
           </button>
         </div>
 
@@ -54,9 +62,17 @@ export default function CartItem({ item }: CartItemProps) {
               aria-label={`Diminuir quantidade de ${item.movie.title}`}
               className="cursor-pointer text-primary transition-colors hover:text-primary/70"
             >
-              <Image src="/images/minus.svg" alt="Diminuir" width={18} height={18} />
+              <Image
+                src="/images/minus.svg"
+                alt="Diminuir"
+                width={18}
+                height={18}
+              />
             </button>
-            <span data-testid="item-quantity" className="flex h-[26px] flex-1 items-center justify-center rounded border border-border text-sm text-text-dark sm:w-[62px] sm:flex-none">
+            <span
+              data-testid="item-quantity"
+              className="flex h-[26px] flex-1 items-center justify-center rounded border border-border text-sm text-text-dark sm:w-[62px] sm:flex-none"
+            >
               {item.quantity}
             </span>
             <button
@@ -65,7 +81,12 @@ export default function CartItem({ item }: CartItemProps) {
               aria-label={`Aumentar quantidade de ${item.movie.title}`}
               className="cursor-pointer text-primary transition-colors hover:text-primary/70"
             >
-              <Image src="/images/plus.svg" alt="Aumentar" width={18} height={18} />
+              <Image
+                src="/images/plus.svg"
+                alt="Aumentar"
+                width={18}
+                height={18}
+              />
             </button>
           </div>
 
@@ -73,7 +94,10 @@ export default function CartItem({ item }: CartItemProps) {
             <span className="text-xs font-bold uppercase text-text-gray sm:hidden">
               SUBTOTAL
             </span>
-            <span data-testid="item-subtotal" className="text-base font-bold text-text-dark">
+            <span
+              data-testid="item-subtotal"
+              className="text-base font-bold text-text-dark"
+            >
               {formatCurrency(subtotal)}
             </span>
           </div>
@@ -85,7 +109,12 @@ export default function CartItem({ item }: CartItemProps) {
           aria-label={`Remover ${item.movie.title} do carrinho`}
           className="hidden cursor-pointer text-primary transition-colors hover:text-primary/70 sm:flex sm:h-6 sm:w-6 sm:items-center sm:justify-center"
         >
-          <Image src="/images/bin-cart.svg" alt="Remover" width={16} height={18} />
+          <Image
+            src="/images/bin-cart.svg"
+            alt="Remover"
+            width={16}
+            height={18}
+          />
         </button>
       </div>
     </div>

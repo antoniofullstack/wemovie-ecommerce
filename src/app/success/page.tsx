@@ -19,9 +19,7 @@ export default function SuccessPage() {
         />
 
         <Link href="/">
-          <Button className="w-[173px]">
-            Voltar
-          </Button>
+          <Button className="w-[173px]">Voltar</Button>
         </Link>
       </div>
     </div>

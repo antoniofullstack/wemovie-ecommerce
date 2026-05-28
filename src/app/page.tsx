@@ -6,18 +6,14 @@ import { Movie } from "@/types/movie";
 export const revalidate = 60;
 
 export default async function Home() {
-  let movies: Movie[] = [];
-  let hasError = false;
+  let initialMovies: Movie[] | undefined;
 
   try {
-    movies = await getMovies();
+    initialMovies = await getMovies();
   } catch {
-    hasError = true;
+    // On server fetch failure, let React Query fetch (and retry) on the client.
+    initialMovies = undefined;
   }
 
-  if (hasError) {
-    return <MovieList initialError />;
-  }
-
-  return <MovieList initialMovies={movies} />;
+  return <MovieList initialMovies={initialMovies} />;
 }

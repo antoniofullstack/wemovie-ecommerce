@@ -1,7 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import Home from "@/app/page";
 import * as api from "@/services/api";
+import { createQueryWrapper } from "@/__tests__/test-utils";
 
 vi.mock("@/services/api");
 
@@ -18,21 +19,25 @@ describe("Home Page (Server Component)", () => {
   it("should fetch movies on the server and render the list", async () => {
     vi.mocked(api.getMovies).mockResolvedValue(mockMovies);
 
-    render(await Home());
+    const Wrapper = createQueryWrapper();
+    render(<Wrapper>{await Home()}</Wrapper>);
 
     expect(api.getMovies).toHaveBeenCalled();
     expect(screen.getByText("Movie 1")).toBeInTheDocument();
     expect(screen.getByText("Movie 2")).toBeInTheDocument();
   });
 
-  it("should render the error state when the server fetch fails", async () => {
+  it("should render the error state when both server and client fetch fail", async () => {
     vi.mocked(api.getMovies).mockRejectedValue(new Error("boom"));
 
-    render(await Home());
+    const Wrapper = createQueryWrapper();
+    render(<Wrapper>{await Home()}</Wrapper>);
 
-    expect(
-      screen.getByText("Ocorreu um erro ao carregar os filmes.")
-    ).toBeInTheDocument();
+    await waitFor(() => {
+      expect(
+        screen.getByText("Ocorreu um erro ao carregar os filmes.")
+      ).toBeInTheDocument();
+    });
     expect(screen.getByText("Tentar novamente")).toBeInTheDocument();
   });
 });

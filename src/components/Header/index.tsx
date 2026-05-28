@@ -5,7 +5,10 @@ import Link from "next/link";
 import { useHydratedCartValue } from "@/store/useCartStore";
 
 export default function Header() {
-  const displayItems = useHydratedCartValue((state) => state.getTotalItems(), 0);
+  const displayItems = useHydratedCartValue(
+    (state) => state.getTotalItems(),
+    0
+  );
 
   return (
     <header className="w-full">

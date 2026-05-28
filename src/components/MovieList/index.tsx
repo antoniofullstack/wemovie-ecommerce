@@ -8,14 +8,10 @@ import { Movie } from "@/types/movie";
 
 interface MovieListProps {
   initialMovies?: Movie[];
-  initialError?: boolean;
 }
 
-export default function MovieList({ initialMovies, initialError }: MovieListProps) {
-  const { movies, loading, error, refetch } = useMovies({
-    initialMovies,
-    initialError,
-  });
+export default function MovieList({ initialMovies }: MovieListProps) {
+  const { movies, loading, error, refetch } = useMovies({ initialMovies });
 
   return (
     <div className="flex flex-1 flex-col pb-10">

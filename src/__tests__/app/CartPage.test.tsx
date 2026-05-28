@@ -21,7 +21,9 @@ describe("Cart Page", () => {
   it("should render EmptyCart when cart is empty", () => {
     useCartStore.setState({ items: [] });
     render(<CartPage />);
-    expect(screen.getByText("Parece que não há nada por aqui :(")).toBeInTheDocument();
+    expect(
+      screen.getByText("Parece que não há nada por aqui :(")
+    ).toBeInTheDocument();
   });
 
   it("should render cart items and total price when cart is not empty", () => {
@@ -44,7 +46,7 @@ describe("Cart Page", () => {
     useCartStore.setState({ items: [mockItem] });
 
     render(<CartPage />);
-    
+
     const finishButton = screen.getByText("Finalizar Pedido");
     fireEvent.click(finishButton);
 

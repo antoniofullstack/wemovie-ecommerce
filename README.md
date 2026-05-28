@@ -24,8 +24,8 @@ Copie o arquivo de exemplo de variáveis de ambiente:
 cp .env.example .env.local
 ```
 
-| Variável | Descrição | Padrão |
-| --- | --- | --- |
+| Variável              | Descrição                 | Padrão                                         |
+| --------------------- | ------------------------- | ---------------------------------------------- |
 | `NEXT_PUBLIC_API_URL` | URL base da API de filmes | `https://wemovies-seven.vercel.app/api/movies` |
 
 ## Como rodar
@@ -41,17 +41,17 @@ Abra [http://localhost:3000](http://localhost:3000) no navegador.
 
 ## Scripts
 
-| Script | Descrição |
-| --- | --- |
-| `npm run dev` | Inicia o servidor de desenvolvimento |
-| `npm run build` | Gera o build de produção |
-| `npm run start` | Sobe o servidor de produção |
-| `npm run lint` | Executa o ESLint |
-| `npm run test` | Roda os testes unitários em modo watch (Vitest) |
-| `npm run test:run` | Roda os testes unitários uma vez |
-| `npm run test:coverage` | Roda os testes com relatório de cobertura |
-| `npm run test:e2e` | Roda os testes end-to-end (Playwright) |
-| `npm run test:e2e:ui` | Abre a UI do Playwright |
+| Script                  | Descrição                                       |
+| ----------------------- | ----------------------------------------------- |
+| `npm run dev`           | Inicia o servidor de desenvolvimento            |
+| `npm run build`         | Gera o build de produção                        |
+| `npm run start`         | Sobe o servidor de produção                     |
+| `npm run lint`          | Executa o ESLint                                |
+| `npm run test`          | Roda os testes unitários em modo watch (Vitest) |
+| `npm run test:run`      | Roda os testes unitários uma vez                |
+| `npm run test:coverage` | Roda os testes com relatório de cobertura       |
+| `npm run test:e2e`      | Roda os testes end-to-end (Playwright)          |
+| `npm run test:e2e:ui`   | Abre a UI do Playwright                         |
 
 ## Estrutura
 

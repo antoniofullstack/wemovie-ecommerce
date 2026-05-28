@@ -1,0 +1,12 @@
+node_modules
+.next
+out
+build
+coverage
+playwright-report
+test-results
+playwright/.cache
+package-lock.json
+tsconfig.tsbuildinfo
+next-env.d.ts
+*.svg

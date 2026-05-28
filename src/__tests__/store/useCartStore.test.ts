@@ -77,8 +77,8 @@ describe("useCartStore", () => {
       useCartStore.getState().incrementItem(mockMovie.id);
 
       const { items } = useCartStore.getState();
-      expect(items.find(i => i.movie.id === mockMovie.id)?.quantity).toBe(2);
-      expect(items.find(i => i.movie.id === mockMovie2.id)?.quantity).toBe(1);
+      expect(items.find((i) => i.movie.id === mockMovie.id)?.quantity).toBe(2);
+      expect(items.find((i) => i.movie.id === mockMovie2.id)?.quantity).toBe(1);
     });
   });
 
@@ -137,7 +137,9 @@ describe("useCartStore", () => {
       useCartStore.getState().addItem(mockMovie2);
 
       const expectedTotal = mockMovie.price * 2 + mockMovie2.price;
-      expect(useCartStore.getState().getTotalPrice()).toBeCloseTo(expectedTotal);
+      expect(useCartStore.getState().getTotalPrice()).toBeCloseTo(
+        expectedTotal
+      );
     });
   });
 
@@ -187,22 +189,24 @@ describe("useCartStore", () => {
       );
 
       expect(result.current).toEqual([]);
-      
+
       // Restore
       useCartStore.persist = originalPersist;
     });
 
     it("should update hydration state when onFinishHydration is called", () => {
       let hydrationFinishedCallback: (() => void) | undefined;
-      vi.spyOn(useCartStore.persist, "onFinishHydration").mockImplementation((cb) => {
-        hydrationFinishedCallback = cb as () => void;
-        return () => {};
-      });
+      vi.spyOn(useCartStore.persist, "onFinishHydration").mockImplementation(
+        (cb) => {
+          hydrationFinishedCallback = cb as () => void;
+          return () => {};
+        }
+      );
 
       renderHook(() => useHydratedCartValue((state) => state.items, []));
-      
+
       expect(hydrationFinishedCallback).toBeDefined();
-      
+
       // Trigger the callback
       hydrationFinishedCallback?.();
     });

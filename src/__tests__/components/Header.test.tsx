@@ -8,7 +8,8 @@ vi.mock("@/store/useCartStore", async () => {
   const actual: any = await vi.importActual("@/store/useCartStore");
   return {
     ...actual,
-    useHydratedCartValue: (selector: (state: unknown) => unknown) => selector(actual.useCartStore.getState()),
+    useHydratedCartValue: (selector: (state: unknown) => unknown) =>
+      selector(actual.useCartStore.getState()),
   };
 });
 

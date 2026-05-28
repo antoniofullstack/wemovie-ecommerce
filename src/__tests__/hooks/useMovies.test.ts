@@ -3,10 +3,21 @@ import { renderHook, waitFor } from "@testing-library/react";
 import { useMovies } from "@/hooks/useMovies";
 import * as api from "@/services/api";
 import { Movie } from "@/types/movie";
+import { createQueryWrapper } from "@/__tests__/test-utils";
 
 const mockMovies = [
-  { id: 1, title: "Viúva Negra", price: 29.99, image: "https://example.com/viuva-negra.png" },
-  { id: 2, title: "Shang-Chi", price: 29.99, image: "https://example.com/shang-chi.png" },
+  {
+    id: 1,
+    title: "Viúva Negra",
+    price: 29.99,
+    image: "https://example.com/viuva-negra.png",
+  },
+  {
+    id: 2,
+    title: "Shang-Chi",
+    price: 29.99,
+    image: "https://example.com/shang-chi.png",
+  },
 ];
 
 vi.mock("@/services/api");
@@ -19,7 +30,9 @@ describe("useMovies", () => {
   it("should start with loading state", () => {
     vi.mocked(api.getMovies).mockReturnValue(new Promise(() => {}));
 
-    const { result } = renderHook(() => useMovies());
+    const { result } = renderHook(() => useMovies(), {
+      wrapper: createQueryWrapper(),
+    });
 
     expect(result.current.loading).toBe(true);
     expect(result.current.movies).toEqual([]);
@@ -29,7 +42,9 @@ describe("useMovies", () => {
   it("should load movies successfully", async () => {
     vi.mocked(api.getMovies).mockResolvedValue(mockMovies);
 
-    const { result } = renderHook(() => useMovies());
+    const { result } = renderHook(() => useMovies(), {
+      wrapper: createQueryWrapper(),
+    });
 
     await waitFor(() => {
       expect(result.current.loading).toBe(false);
@@ -42,7 +57,9 @@ describe("useMovies", () => {
   it("should set error state when fetch fails", async () => {
     vi.mocked(api.getMovies).mockRejectedValue(new Error("API Error"));
 
-    const { result } = renderHook(() => useMovies());
+    const { result } = renderHook(() => useMovies(), {
+      wrapper: createQueryWrapper(),
+    });
 
     await waitFor(() => {
       expect(result.current.loading).toBe(false);
@@ -55,7 +72,9 @@ describe("useMovies", () => {
   it("should provide a refetch function", async () => {
     vi.mocked(api.getMovies).mockResolvedValue(mockMovies);
 
-    const { result } = renderHook(() => useMovies());
+    const { result } = renderHook(() => useMovies(), {
+      wrapper: createQueryWrapper(),
+    });
 
     await waitFor(() => {
       expect(result.current.loading).toBe(false);
@@ -67,13 +86,23 @@ describe("useMovies", () => {
   it("should refetch movies when refetch is called", async () => {
     vi.mocked(api.getMovies).mockResolvedValue(mockMovies);
 
-    const { result } = renderHook(() => useMovies());
+    const { result } = renderHook(() => useMovies(), {
+      wrapper: createQueryWrapper(),
+    });
 
     await waitFor(() => {
       expect(result.current.loading).toBe(false);
     });
 
-    const updatedMovies = [...mockMovies, { id: 3, title: "Eternos", price: 39.99, image: "https://example.com/eternos.png" }];
+    const updatedMovies = [
+      ...mockMovies,
+      {
+        id: 3,
+        title: "Eternos",
+        price: 39.99,
+        image: "https://example.com/eternos.png",
+      },
+    ];
     vi.mocked(api.getMovies).mockResolvedValue(updatedMovies);
 
     result.current.refetch();
@@ -86,7 +115,9 @@ describe("useMovies", () => {
   it("should set error state when refetch fails", async () => {
     vi.mocked(api.getMovies).mockResolvedValue(mockMovies);
 
-    const { result } = renderHook(() => useMovies());
+    const { result } = renderHook(() => useMovies(), {
+      wrapper: createQueryWrapper(),
+    });
 
     await waitFor(() => {
       expect(result.current.loading).toBe(false);
@@ -108,9 +139,11 @@ describe("useMovies", () => {
     });
     vi.mocked(api.getMovies).mockReturnValue(promise);
 
-    const { unmount } = renderHook(() => useMovies());
+    const { unmount } = renderHook(() => useMovies(), {
+      wrapper: createQueryWrapper(),
+    });
     unmount();
-    
+
     resolvePromise!(mockMovies);
   });
 
@@ -121,9 +154,11 @@ describe("useMovies", () => {
     });
     vi.mocked(api.getMovies).mockReturnValue(promise);
 
-    const { unmount } = renderHook(() => useMovies());
+    const { unmount } = renderHook(() => useMovies(), {
+      wrapper: createQueryWrapper(),
+    });
     unmount();
-    
+
     rejectPromise!(new Error("Error"));
   });
 });

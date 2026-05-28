@@ -6,7 +6,9 @@ import Button from "@/components/Button";
 describe("Button", () => {
   it("should render children text", () => {
     render(<Button>Adicionar</Button>);
-    expect(screen.getByRole("button", { name: "Adicionar" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Adicionar" })
+    ).toBeInTheDocument();
   });
 
   it("should call onClick handler when clicked", async () => {

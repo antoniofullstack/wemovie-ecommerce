@@ -3,9 +3,24 @@ import { getMovies } from "@/services/api";
 
 const mockMovies = {
   products: [
-    { id: 1, title: "Viúva Negra", price: 29.99, image: "https://example.com/viuva-negra.png" },
-    { id: 2, title: "Shang-Chi", price: 29.99, image: "https://example.com/shang-chi.png" },
-    { id: 3, title: "Eternos", price: 29.99, image: "https://example.com/eternos.png" },
+    {
+      id: 1,
+      title: "Viúva Negra",
+      price: 29.99,
+      image: "https://example.com/viuva-negra.png",
+    },
+    {
+      id: 2,
+      title: "Shang-Chi",
+      price: 29.99,
+      image: "https://example.com/shang-chi.png",
+    },
+    {
+      id: 3,
+      title: "Eternos",
+      price: 29.99,
+      image: "https://example.com/eternos.png",
+    },
   ],
 };
 
@@ -25,7 +40,9 @@ describe("getMovies", () => {
 
     const movies = await getMovies();
 
-    expect(fetch).toHaveBeenCalledWith("https://wemovies-seven.vercel.app/api/movies");
+    expect(fetch).toHaveBeenCalledWith(
+      "https://wemovies-seven.vercel.app/api/movies"
+    );
     expect(movies).toEqual(mockMovies.products);
     expect(movies).toHaveLength(3);
   });

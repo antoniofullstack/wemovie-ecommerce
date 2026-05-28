@@ -156,7 +156,6 @@ describe("useCartStore", () => {
 
   describe("useHydratedCartValue", () => {
     it("should return fallback value before hydration", () => {
-      // @ts-ignore - access private persist for mocking
       vi.spyOn(useCartStore.persist, "hasHydrated").mockReturnValue(false);
 
       const { result } = renderHook(() =>
@@ -167,7 +166,6 @@ describe("useCartStore", () => {
     });
 
     it("should return store value after hydration", () => {
-      // @ts-ignore - access private persist for mocking
       vi.spyOn(useCartStore.persist, "hasHydrated").mockReturnValue(true);
 
       useCartStore.setState({ items: [{ movie: mockMovie, quantity: 1 }] });
@@ -181,7 +179,7 @@ describe("useCartStore", () => {
 
     it("should handle missing persist property", () => {
       const originalPersist = useCartStore.persist;
-      // @ts-ignore
+      // @ts-expect-error - simulate missing persist property
       useCartStore.persist = undefined;
 
       const { result } = renderHook(() =>
@@ -191,15 +189,13 @@ describe("useCartStore", () => {
       expect(result.current).toEqual([]);
       
       // Restore
-      // @ts-ignore
       useCartStore.persist = originalPersist;
     });
 
     it("should update hydration state when onFinishHydration is called", () => {
-      let hydrationFinishedCallback: any;
-      // @ts-ignore
+      let hydrationFinishedCallback: (() => void) | undefined;
       vi.spyOn(useCartStore.persist, "onFinishHydration").mockImplementation((cb) => {
-        hydrationFinishedCallback = cb;
+        hydrationFinishedCallback = cb as () => void;
         return () => {};
       });
 
@@ -208,7 +204,7 @@ describe("useCartStore", () => {
       expect(hydrationFinishedCallback).toBeDefined();
       
       // Trigger the callback
-      hydrationFinishedCallback({});
+      hydrationFinishedCallback?.();
     });
   });
 });

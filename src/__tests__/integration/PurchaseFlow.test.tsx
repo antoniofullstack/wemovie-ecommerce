@@ -41,16 +41,16 @@ describe("Integration Flow: Purchase Journey", () => {
     useCartStore.setState({ items: [] });
     vi.mocked(useRouter).mockReturnValue({
       push: mockPush,
-    } as any);
+    } as unknown as ReturnType<typeof useRouter>);
     vi.mocked(api.getMovies).mockResolvedValue(mockMovies);
   });
 
   it("should allow a user to add movies to cart and complete the purchase", async () => {
-    // 1. Start at Home Page
+    // 1. Start at Home Page (async Server Component fetches on the server)
     const { rerender } = render(
       <>
         <Header />
-        <Home />
+        {await Home()}
       </>
     );
 

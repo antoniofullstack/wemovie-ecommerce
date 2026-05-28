@@ -1,36 +1,86 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# WeMovies — E-commerce de Filmes
 
-## Getting Started
+Aplicação de e-commerce de filmes construída com **Next.js (App Router)**, **React**, **Zustand** e **Tailwind CSS**. Permite listar filmes, gerenciar um carrinho persistente e finalizar a compra.
 
-First, run the development server:
+## Stack
+
+- **Next.js 16** (App Router, Server Components)
+- **React 19**
+- **Zustand** (estado do carrinho, com persistência em `localStorage`)
+- **Tailwind CSS v4**
+- **Vitest** + **Testing Library** (testes unitários e de integração)
+- **Playwright** (testes end-to-end)
+
+## Pré-requisitos
+
+- Node.js 20+
+- npm
+
+## Configuração
+
+Copie o arquivo de exemplo de variáveis de ambiente:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cp .env.example .env.local
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+| Variável | Descrição | Padrão |
+| --- | --- | --- |
+| `NEXT_PUBLIC_API_URL` | URL base da API de filmes | `https://wemovies-seven.vercel.app/api/movies` |
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Como rodar
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Instale as dependências e inicie o servidor de desenvolvimento:
 
-## Learn More
+```bash
+npm install
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+Abra [http://localhost:3000](http://localhost:3000) no navegador.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Scripts
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Script | Descrição |
+| --- | --- |
+| `npm run dev` | Inicia o servidor de desenvolvimento |
+| `npm run build` | Gera o build de produção |
+| `npm run start` | Sobe o servidor de produção |
+| `npm run lint` | Executa o ESLint |
+| `npm run test` | Roda os testes unitários em modo watch (Vitest) |
+| `npm run test:run` | Roda os testes unitários uma vez |
+| `npm run test:coverage` | Roda os testes com relatório de cobertura |
+| `npm run test:e2e` | Roda os testes end-to-end (Playwright) |
+| `npm run test:e2e:ui` | Abre a UI do Playwright |
 
-## Deploy on Vercel
+## Estrutura
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+src/
+  app/          # Rotas (App Router): home, /cart, /success, loading e error boundaries
+  components/   # Componentes de UI (Button, MovieCard, CartItem, Header, etc.)
+  hooks/        # Hooks customizados (useMovies)
+  services/     # Acesso à API (getMovies)
+  store/        # Estado global (useCartStore, Zustand + persist)
+  types/        # Tipos compartilhados (Movie, CartItem)
+  utils/        # Utilitários (formatCurrency)
+  __tests__/    # Testes unitários e de integração
+playwright/     # Testes end-to-end
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Arquitetura de dados
+
+A página inicial é um **Server Component** que busca os filmes no servidor (com revalidação via ISR) e entrega os dados já hidratados ao componente cliente `MovieList`. Em caso de falha na busca, o cliente expõe um botão de "Tentar novamente" que refaz a requisição no navegador.
+
+O carrinho é gerenciado por um store **Zustand** persistido em `localStorage`. Para evitar mismatch de hidratação entre servidor e cliente, valores derivados do carrinho são lidos via `useHydratedCartValue`.
+
+## Testes
+
+```bash
+npm run test:run    # unit + integração
+npm run test:e2e    # end-to-end
+```
+
+## Deploy
+
+O deploy recomendado é via [Vercel](https://vercel.com/new). Configure a variável `NEXT_PUBLIC_API_URL` no painel do projeto caso utilize uma API diferente da padrão.

@@ -1,63 +1,38 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import Home from "@/app/page";
-import { useMovies } from "@/hooks/useMovies";
+import * as api from "@/services/api";
 
-vi.mock("@/hooks/useMovies");
+vi.mock("@/services/api");
 
-describe("Home Page", () => {
+const mockMovies = [
+  { id: 1, title: "Movie 1", price: 10, image: "image1.png" },
+  { id: 2, title: "Movie 2", price: 20, image: "image2.png" },
+];
+
+describe("Home Page (Server Component)", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  it("should render loading spinner when loading", () => {
-    vi.mocked(useMovies).mockReturnValue({
-      movies: [],
-      loading: true,
-      error: false,
-      refetch: vi.fn(),
-    });
+  it("should fetch movies on the server and render the list", async () => {
+    vi.mocked(api.getMovies).mockResolvedValue(mockMovies);
 
-    render(<Home />);
-    expect(screen.getByAltText("Carregando...")).toBeInTheDocument();
+    render(await Home());
+
+    expect(api.getMovies).toHaveBeenCalled();
+    expect(screen.getByText("Movie 1")).toBeInTheDocument();
+    expect(screen.getByText("Movie 2")).toBeInTheDocument();
   });
 
-  it("should render error message and retry button when error occurs", () => {
-    const refetch = vi.fn();
-    vi.mocked(useMovies).mockReturnValue({
-      movies: [],
-      loading: false,
-      error: true,
-      refetch,
-    });
+  it("should render the error state when the server fetch fails", async () => {
+    vi.mocked(api.getMovies).mockRejectedValue(new Error("boom"));
 
-    render(<Home />);
+    render(await Home());
+
     expect(
       screen.getByText("Ocorreu um erro ao carregar os filmes.")
     ).toBeInTheDocument();
-    
-    const retryButton = screen.getByText("Tentar novamente");
-    retryButton.click();
-    expect(refetch).toHaveBeenCalled();
-  });
-
-  it("should render movies list when loaded successfully", () => {
-    const mockMovies = [
-      {
-        id: 1,
-        title: "Movie 1",
-        price: 10,
-        image: "image1.png",
-      },
-    ];
-    vi.mocked(useMovies).mockReturnValue({
-      movies: mockMovies,
-      loading: false,
-      error: false,
-      refetch: vi.fn(),
-    });
-
-    render(<Home />);
-    expect(screen.getByText("Movie 1")).toBeInTheDocument();
+    expect(screen.getByText("Tentar novamente")).toBeInTheDocument();
   });
 });

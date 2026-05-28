@@ -23,6 +23,7 @@ export default function CartItem({ item }: CartItemProps) {
         alt={item.movie.title}
         width={91}
         height={114}
+        sizes="(min-width: 640px) 91px, 64px"
         className="h-[82px] w-[64px] object-contain sm:h-[114px] sm:w-[91px]"
         priority
       />
@@ -38,6 +39,7 @@ export default function CartItem({ item }: CartItemProps) {
           <button
             onClick={() => removeItem(item.movie.id)}
             data-testid="remove-item-mobile"
+            aria-label={`Remover ${item.movie.title} do carrinho`}
             className="cursor-pointer text-primary transition-colors hover:text-primary/70 sm:hidden"
           >
             <Image src="/images/bin-cart.svg" alt="Remover" width={16} height={18} />
@@ -49,6 +51,7 @@ export default function CartItem({ item }: CartItemProps) {
             <button
               onClick={() => decrementItem(item.movie.id)}
               data-testid="decrement-quantity"
+              aria-label={`Diminuir quantidade de ${item.movie.title}`}
               className="cursor-pointer text-primary transition-colors hover:text-primary/70"
             >
               <Image src="/images/minus.svg" alt="Diminuir" width={18} height={18} />
@@ -59,6 +62,7 @@ export default function CartItem({ item }: CartItemProps) {
             <button
               onClick={() => incrementItem(item.movie.id)}
               data-testid="increment-quantity"
+              aria-label={`Aumentar quantidade de ${item.movie.title}`}
               className="cursor-pointer text-primary transition-colors hover:text-primary/70"
             >
               <Image src="/images/plus.svg" alt="Aumentar" width={18} height={18} />
@@ -78,6 +82,7 @@ export default function CartItem({ item }: CartItemProps) {
         <button
           onClick={() => removeItem(item.movie.id)}
           data-testid="remove-item-desktop"
+          aria-label={`Remover ${item.movie.title} do carrinho`}
           className="hidden cursor-pointer text-primary transition-colors hover:text-primary/70 sm:flex sm:h-6 sm:w-6 sm:items-center sm:justify-center"
         >
           <Image src="/images/bin-cart.svg" alt="Remover" width={16} height={18} />

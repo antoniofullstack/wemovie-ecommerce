@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { renderHook, waitFor } from "@testing-library/react";
 import { useMovies } from "@/hooks/useMovies";
 import * as api from "@/services/api";
+import { Movie } from "@/types/movie";
 
 const mockMovies = [
   { id: 1, title: "Viúva Negra", price: 29.99, image: "https://example.com/viuva-negra.png" },
@@ -101,8 +102,8 @@ describe("useMovies", () => {
   });
 
   it("should not update state if unmounted before success", async () => {
-    let resolvePromise: (value: any) => void;
-    const promise = new Promise((resolve) => {
+    let resolvePromise: (value: Movie[]) => void;
+    const promise = new Promise<Movie[]>((resolve) => {
       resolvePromise = resolve;
     });
     vi.mocked(api.getMovies).mockReturnValue(promise);
@@ -114,8 +115,8 @@ describe("useMovies", () => {
   });
 
   it("should not update state if unmounted before error", async () => {
-    let rejectPromise: (reason?: any) => void;
-    const promise = new Promise((_, reject) => {
+    let rejectPromise: (reason?: unknown) => void;
+    const promise = new Promise<Movie[]>((_, reject) => {
       rejectPromise = reject;
     });
     vi.mocked(api.getMovies).mockReturnValue(promise);

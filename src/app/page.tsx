@@ -1,33 +1,23 @@
-"use client";
+import MovieList from "@/components/MovieList";
+import { getMovies } from "@/services/api";
+import { Movie } from "@/types/movie";
 
-import MovieCard from "@/components/MovieCard";
-import Button from "@/components/Button";
-import LoadingSpinner from "@/components/LoadingSpinner";
-import { useMovies } from "@/hooks/useMovies";
+// Revalidate the movie catalog periodically (ISR).
+export const revalidate = 60;
 
-export default function Home() {
-  const { movies, loading, error, refetch } = useMovies();
+export default async function Home() {
+  let movies: Movie[] = [];
+  let hasError = false;
 
-  return (
-    <div className="flex flex-1 flex-col pb-10">
-      {loading ? (
-        <LoadingSpinner />
-      ) : error ? (
-        <div className="flex flex-col items-center justify-center gap-4 py-20">
-          <p className="text-sm font-semibold text-white">
-            Ocorreu um erro ao carregar os filmes.
-          </p>
-          <Button onClick={refetch} className="px-6">
-            Tentar novamente
-          </Button>
-        </div>
-      ) : (
-        <div className="flex flex-col gap-4 md:flex-row md:flex-wrap">
-          {movies.map((movie) => (
-            <MovieCard key={movie.id} movie={movie} />
-          ))}
-        </div>
-      )}
-    </div>
-  );
+  try {
+    movies = await getMovies();
+  } catch {
+    hasError = true;
+  }
+
+  if (hasError) {
+    return <MovieList initialError />;
+  }
+
+  return <MovieList initialMovies={movies} />;
 }

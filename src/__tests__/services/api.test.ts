@@ -50,4 +50,35 @@ describe("getMovies", () => {
 
     await expect(getMovies()).rejects.toThrow("Network error");
   });
+
+  it("should throw an error when the response shape is invalid", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: () =>
+          Promise.resolve({
+            products: [{ id: "not-a-number", title: 123 }],
+          }),
+      })
+    );
+
+    await expect(getMovies()).rejects.toThrow(
+      "Resposta da API em formato inesperado"
+    );
+  });
+
+  it("should throw an error when products is missing", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        json: () => Promise.resolve({}),
+      })
+    );
+
+    await expect(getMovies()).rejects.toThrow(
+      "Resposta da API em formato inesperado"
+    );
+  });
 });

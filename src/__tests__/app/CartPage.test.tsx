@@ -15,7 +15,7 @@ describe("Cart Page", () => {
     vi.clearAllMocks();
     vi.mocked(useRouter).mockReturnValue({
       push: mockPush,
-    } as any);
+    } as unknown as ReturnType<typeof useRouter>);
   });
 
   it("should render EmptyCart when cart is empty", () => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCartStore } from "@/store/useCartStore";
 import { formatCurrency } from "@/utils/formatCurrency";
@@ -11,12 +11,17 @@ import Button from "@/components/Button";
 export default function CartPage() {
   const router = useRouter();
   const items = useCartStore((state) => state.items);
-  const totalPrice = useCartStore((state) => state.getTotalPrice());
   const clearCart = useCartStore((state) => state.clearCart);
+
+  const totalPrice = useMemo(
+    () => items.reduce((total, item) => total + item.movie.price * item.quantity, 0),
+    [items]
+  );
 
   const [isFinishing, setIsFinishing] = useState(false);
 
   const handleFinishOrder = () => {
+    if (isFinishing) return;
     setIsFinishing(true);
     clearCart();
     router.push("/success");
@@ -61,9 +66,11 @@ export default function CartPage() {
           </div>
           <Button
             onClick={handleFinishOrder}
-            className="w-full sm:w-[173px]"
+            disabled={isFinishing}
+            aria-busy={isFinishing}
+            className="w-full disabled:cursor-not-allowed disabled:opacity-70 sm:w-[173px]"
           >
-            Finalizar Pedido
+            {isFinishing ? "Finalizando..." : "Finalizar Pedido"}
           </Button>
         </div>
       </div>

@@ -16,7 +16,10 @@ export default function MovieCard({ movie }: MovieCardProps) {
   const isInCart = displayQuantity > 0;
 
   return (
-    <div className="flex flex-col items-center gap-2 rounded bg-card p-4 md:basis-[calc(33.333%-11px)] md:gap-2">
+    <div 
+      data-testid={`movie-card-${movie.id}`}
+      className="flex flex-col items-center gap-2 rounded bg-card p-4 md:basis-[calc(33.333%-11px)] md:gap-2"
+    >
       <div className="flex flex-col items-center gap-2 self-stretch">
         <Image
           src={movie.image}
@@ -35,10 +38,11 @@ export default function MovieCard({ movie }: MovieCardProps) {
         variant={isInCart ? "success" : "primary"}
         fullWidth
         className="gap-3 px-2"
+        data-testid="add-to-cart-button"
       >
         <span className="flex items-center gap-1">
           <Image src="/images/mdaddshoppingcart-1.svg" alt="" width={14} height={14} />
-          <span className="font-normal">{displayQuantity}</span>
+          <span data-testid="cart-quantity" className="font-normal">{displayQuantity}</span>
         </span>
         <span>ADICIONAR AO CARRINHO</span>
       </Button>

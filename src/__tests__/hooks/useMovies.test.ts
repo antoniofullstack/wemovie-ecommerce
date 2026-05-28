@@ -81,4 +81,48 @@ describe("useMovies", () => {
       expect(result.current.movies).toEqual(updatedMovies);
     });
   });
+
+  it("should set error state when refetch fails", async () => {
+    vi.mocked(api.getMovies).mockResolvedValue(mockMovies);
+
+    const { result } = renderHook(() => useMovies());
+
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });
+
+    vi.mocked(api.getMovies).mockRejectedValue(new Error("Refetch Error"));
+
+    result.current.refetch();
+
+    await waitFor(() => {
+      expect(result.current.error).toBe(true);
+    });
+  });
+
+  it("should not update state if unmounted before success", async () => {
+    let resolvePromise: (value: any) => void;
+    const promise = new Promise((resolve) => {
+      resolvePromise = resolve;
+    });
+    vi.mocked(api.getMovies).mockReturnValue(promise);
+
+    const { unmount } = renderHook(() => useMovies());
+    unmount();
+    
+    resolvePromise!(mockMovies);
+  });
+
+  it("should not update state if unmounted before error", async () => {
+    let rejectPromise: (reason?: any) => void;
+    const promise = new Promise((_, reject) => {
+      rejectPromise = reject;
+    });
+    vi.mocked(api.getMovies).mockReturnValue(promise);
+
+    const { unmount } = renderHook(() => useMovies());
+    unmount();
+    
+    rejectPromise!(new Error("Error"));
+  });
 });

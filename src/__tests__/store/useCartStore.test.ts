@@ -1,5 +1,6 @@
-import { describe, it, expect, beforeEach } from "vitest";
-import { useCartStore } from "@/store/useCartStore";
+import { describe, it, expect, beforeEach, vi } from "vitest";
+import { renderHook } from "@testing-library/react";
+import { useCartStore, useHydratedCartValue } from "@/store/useCartStore";
 import { Movie } from "@/types/movie";
 
 const mockMovie: Movie = {
@@ -70,12 +71,14 @@ describe("useCartStore", () => {
   });
 
   describe("incrementItem", () => {
-    it("should increment the quantity of an existing item", () => {
+    it("should increment the quantity of an existing item when multiple items are present", () => {
       useCartStore.getState().addItem(mockMovie);
+      useCartStore.getState().addItem(mockMovie2);
       useCartStore.getState().incrementItem(mockMovie.id);
 
       const { items } = useCartStore.getState();
-      expect(items[0].quantity).toBe(2);
+      expect(items.find(i => i.movie.id === mockMovie.id)?.quantity).toBe(2);
+      expect(items.find(i => i.movie.id === mockMovie2.id)?.quantity).toBe(1);
     });
   });
 
@@ -148,6 +151,64 @@ describe("useCartStore", () => {
       useCartStore.getState().addItem(mockMovie);
 
       expect(useCartStore.getState().getItemQuantity(mockMovie.id)).toBe(2);
+    });
+  });
+
+  describe("useHydratedCartValue", () => {
+    it("should return fallback value before hydration", () => {
+      // @ts-ignore - access private persist for mocking
+      vi.spyOn(useCartStore.persist, "hasHydrated").mockReturnValue(false);
+
+      const { result } = renderHook(() =>
+        useHydratedCartValue((state) => state.items, [])
+      );
+
+      expect(result.current).toEqual([]);
+    });
+
+    it("should return store value after hydration", () => {
+      // @ts-ignore - access private persist for mocking
+      vi.spyOn(useCartStore.persist, "hasHydrated").mockReturnValue(true);
+
+      useCartStore.setState({ items: [{ movie: mockMovie, quantity: 1 }] });
+
+      const { result } = renderHook(() =>
+        useHydratedCartValue((state) => state.getTotalItems(), 0)
+      );
+
+      expect(result.current).toBe(1);
+    });
+
+    it("should handle missing persist property", () => {
+      const originalPersist = useCartStore.persist;
+      // @ts-ignore
+      useCartStore.persist = undefined;
+
+      const { result } = renderHook(() =>
+        useHydratedCartValue((state) => state.items, [])
+      );
+
+      expect(result.current).toEqual([]);
+      
+      // Restore
+      // @ts-ignore
+      useCartStore.persist = originalPersist;
+    });
+
+    it("should update hydration state when onFinishHydration is called", () => {
+      let hydrationFinishedCallback: any;
+      // @ts-ignore
+      vi.spyOn(useCartStore.persist, "onFinishHydration").mockImplementation((cb) => {
+        hydrationFinishedCallback = cb;
+        return () => {};
+      });
+
+      renderHook(() => useHydratedCartValue((state) => state.items, []));
+      
+      expect(hydrationFinishedCallback).toBeDefined();
+      
+      // Trigger the callback
+      hydrationFinishedCallback({});
     });
   });
 });

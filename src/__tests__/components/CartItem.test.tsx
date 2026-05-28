@@ -68,12 +68,25 @@ describe("CartItem", () => {
     expect(items[0].quantity).toBe(1);
   });
 
-  it("should remove item when trash button is clicked", async () => {
+  it("should remove item when mobile trash button is clicked", async () => {
     const user = userEvent.setup();
     render(<CartItem item={mockCartItem} />);
 
     const removeButtons = screen.getAllByAltText("Remover");
+    // The first button is for mobile
     await user.click(removeButtons[0]);
+
+    const { items } = useCartStore.getState();
+    expect(items).toHaveLength(0);
+  });
+
+  it("should remove item when desktop trash button is clicked", async () => {
+    const user = userEvent.setup();
+    render(<CartItem item={mockCartItem} />);
+
+    const removeButtons = screen.getAllByAltText("Remover");
+    // The second button is for desktop
+    await user.click(removeButtons[1]);
 
     const { items } = useCartStore.getState();
     expect(items).toHaveLength(0);

@@ -1,19 +1,28 @@
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from "@tanstack/react-query";
 import MovieList from "@/components/MovieList";
 import { getMovies } from "@/services/api";
-import { Movie } from "@/types/movie";
+import { moviesQueryKey } from "@/hooks/useMovies";
 
 // Revalidate the movie catalog periodically (ISR).
 export const revalidate = 60;
 
 export default async function Home() {
-  let initialMovies: Movie[] | undefined;
+  const queryClient = new QueryClient();
 
-  try {
-    initialMovies = await getMovies();
-  } catch {
-    // On server fetch failure, let React Query fetch (and retry) on the client.
-    initialMovies = undefined;
-  }
+  // Prefetch on the server and hand the cache to the client. prefetchQuery
+  // never throws, so an API failure simply leaves the client to refetch/retry.
+  await queryClient.prefetchQuery({
+    queryKey: moviesQueryKey,
+    queryFn: getMovies,
+  });
 
-  return <MovieList initialMovies={initialMovies} />;
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <MovieList />
+    </HydrationBoundary>
+  );
 }

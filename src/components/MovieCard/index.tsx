@@ -8,9 +8,10 @@ import Button from "@/components/Button";
 
 interface MovieCardProps {
   movie: Movie;
+  priority?: boolean;
 }
 
-export default function MovieCard({ movie }: MovieCardProps) {
+export default function MovieCard({ movie, priority = false }: MovieCardProps) {
   const addItem = useCartStore((state) => state.addItem);
   const displayQuantity = useHydratedCartValue(
     (state) => state.getItemQuantity(movie.id),
@@ -29,6 +30,8 @@ export default function MovieCard({ movie }: MovieCardProps) {
           alt={movie.title}
           width={147}
           height={188}
+          priority={priority}
+          sizes="147px"
           className="h-[188px] w-[147px]"
         />
         <h2 className="text-xs font-bold text-text-dark text-center">
